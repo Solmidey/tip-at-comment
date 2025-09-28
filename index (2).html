@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tip‑at‑Comment · on Base</title>
+  <meta name="color-scheme" content="dark light">
+  <style>
+    :root{
+      --base-blue:#0052FF;
+      --base-cyan:#00D9FF;
+      --ink:#0a0f1c;
+      --card: rgba(255,255,255,0.10);
+      --stroke: rgba(255,255,255,0.18);
+      --text: #eef3ff;
+      --muted:#a8b3cf;
+      --ok:#00e6a6;
+      --warn:#ffb020;
+      --err:#ff4d4f;
+      --shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% -10%, rgba(0,217,255,0.15), transparent 60%),
+        radial-gradient(900px 700px at 100% 0%, rgba(0,82,255,0.18), transparent 60%),
+        linear-gradient(180deg, #0b1020 0%, #0b1129 60%, #060913 100%);
+      min-height:100%;
+    }
+    a{color:#b6d2ff}
+    .wrap{
+      max-width: 860px;
+      margin: 36px auto 80px;
+      padding: 0 18px;
+    }
+    header{
+      display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:18px;
+    }
+    .logo{
+      display:flex; align-items:center; gap:12px;
+    }
+    .mark{
+      width:36px; height:36px; border-radius:10px;
+      background: conic-gradient(from 220deg at 60% 40%, var(--base-cyan), var(--base-blue));
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .mark::after{
+      content:""; position:absolute; inset:7px; border-radius:8px;
+      background: radial-gradient(70% 70% at 30% 30%, rgba(255,255,255,0.6), rgba(255,255,255,0.06) 60%);
+      mix-blend:overlay; opacity:0.6;
+    }
+    h1{font-size:20px; margin:0; font-weight:700; letter-spacing:.2px;}
+    .badge{
+      padding:6px 10px; border:1px solid var(--stroke); border-radius:999px; color:var(--muted);
+      backdrop-filter: blur(8px); background: var(--card);
+      font-size:12px;
+    }
+    .card{
+      margin-top:14px;
+      border:1px solid var(--stroke);
+      border-radius:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .hero{
+      padding:22px 22px 8px;
+      display:grid; grid-template-columns: 1fr; gap:12px;
+    }
+    .row{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
+    .row-3{display:grid; grid-template-columns: 1fr 1fr auto; gap:12px;}
+    @media (max-width: 720px){
+      .row, .row-3{grid-template-columns: 1fr;}
+    }
+    label{font-size:13px; color:var(--muted); margin:6px 4px 6px; display:block;}
+    input{
+      width:100%; padding:12px 14px; border-radius:12px;
+      color:var(--text);
+      background: rgba(255,255,255,0.06);
+      border:1px solid var(--stroke);
+      outline:none;
+    }
+    input::placeholder{color:#9aa6be}
+    .btn{
+      --bg: linear-gradient(90deg, var(--base-blue), var(--base-cyan));
+      border:none; padding:12px 16px; border-radius:12px; font-weight:700; cursor:pointer;
+      background: var(--bg); color:white; box-shadow: 0 6px 18px rgba(0,82,255,0.35);
+      transition: transform .05s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-outline{
+      background: transparent; color:var(--text);
+      border:1px solid var(--stroke); box-shadow:none;
+    }
+    .toolbar{ display:flex; gap:10px; flex-wrap: wrap; align-items:center; }
+    .pill{
+      font-size:12px; padding:6px 8px; border-radius:10px; border:1px solid var(--stroke); background:var(--card);
+      color: var(--muted);
+    }
+    .status{
+      padding:14px 18px; border-top:1px dashed var(--stroke); font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(255,255,255,0.02));
+      min-height: 50px; white-space: pre-wrap;
+    }
+    .footer{
+      margin-top:14px; padding:14px 18px; font-size:13px; color:var(--muted);
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    }
+    .linkbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)}
+    .ghost{opacity:.9}
+    .hint{font-size:12px; color:#9aa6be; margin-top:6px}
+    .k{color:#8ec5ff}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>Tip‑at‑Comment</h1>
+          <div class="ghost" style="font-size:12px;">Send tiny tips tied to any link or text — on <strong>Base</strong> ⚡</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <span id="netPill" class="pill">Network: <span id="netName">…</span></span>
+        <button id="connectBtn" class="btn-outline">Connect Wallet</button>
+        <button id="switchBtn" class="btn-outline">Switch to Base</button>
+      </div>
+    </header>
+
+    <section class="card hero">
+      <div class="row">
+        <div>
+          <label>Comment text or URL</label>
+          <input id="comment" placeholder="Paste a Warpcast link or any text…">
+          <div class="hint">We hash this to a <span class="k">bytes32 commentId</span> on-chain.</div>
+        </div>
+        <div>
+          <label>Recipient (0x address)</label>
+          <input id="recipient" placeholder="0xABC…123 (who receives the tip)">
+          <div class="hint">Use your own address to test if you like.</div>
+        </div>
+      </div>
+
+      <div class="row-3">
+        <div>
+          <label>Amount (ETH)</label>
+          <input id="amount" value="0.0001">
+        </div>
+        <div>
+          <label>Computed commentId</label>
+          <input id="cid" value="—" readonly>
+        </div>
+        <div style="align-self:end;">
+          <button id="prefillFc" class="btn-outline">Prefill Farcaster URL</button>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin:4px 0 14px;">
+        <button id="tipBtn" class="btn">Send Tip on Base</button>
+        <button id="readBtn" class="btn-outline">Read total for this comment</button>
+      </div>
+
+      <div class="status" id="status" role="status"></div>
+      <div class="footer">
+        <div class="linkbar">
+          <a id="expl" target="_blank" rel="noopener">View last tx ↗</a>
+          <span>|</span>
+          <a href="https://basescan.org/address/0x36FF9732e7E7fd57aE010C287454fe18ad574761" target="_blank" rel="noopener">Contract on BaseScan ↗</a>
+        </div>
+        <div class="ghost">Prototype — keep tips tiny.</div>
+      </div>
+    </section>
+
+    <p class="hint">Tip: If your wallet won’t connect from a local file, serve this over <code>http://localhost</code> or use your Vercel URL.</p>
+  </div>
+
+  <!-- ethers.js v5 (global 'ethers') — CDN with fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"
+          onerror="(function(){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js';document.head.appendChild(s);})();"></script>
+
+  <script>
+    // ----- Config -----
+    const CONTRACT = "0x36FF9732e7E7fd57aE010C287454fe18ad574761";
+    const ABI = [
+      "function tip(bytes32 commentId, address recipient) payable",
+      "function totalByComment(bytes32) view returns (uint256)"
+    ];
+
+    // ----- Helpers -----
+    const $ = (id)=>document.getElementById(id);
+    const log = (t)=> { const s = $("status"); s.textContent += t + "\n"; s.scrollTop = s.scrollHeight; };
+    const clearLog = ()=> { $("status").textContent=""; };
+    const short = (a)=> a ? a.slice(0,6)+"…"+a.slice(-4) : "";
+    const toWei = (eth)=> ethers.utils.parseEther(String(eth));
+
+    // Compute commentId on input
+    $("comment").addEventListener("input", ()=> {
+      const txt = $("comment").value.trim();
+      $("cid").value = txt ? ethers.utils.id(txt) : "—";
+    });
+
+    $("prefillFc").onclick = ()=> {
+      $("comment").value = "https://warpcast.com/~/casts/EXAMPLE";
+      $("comment").dispatchEvent(new Event("input"));
+    };
+
+    // ----- Provider / Network -----
+    let provider, signer, accounts;
+    async function ensureProvider(){
+      if (!window.ethereum) throw new Error("Wallet not detected. Open via https:// or http://localhost, or install MetaMask.");
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      return provider;
+    }
+    async function connect(){
+      clearLog();
+      await ensureProvider();
+      log("Requesting accounts…");
+      accounts = await provider.send("eth_requestAccounts", []);
+      const acct = accounts?.[0];
+      if (!acct) throw new Error("No account returned.");
+      $("connectBtn").textContent = "Connected " + short(acct);
+      log("Connected: " + acct);
+      await showNetwork();
+    }
+    async function showNetwork(){
+      const net = await provider.getNetwork();
+      $("netName").textContent = net.chainId === 8453 ? "Base (8453)" : `${net.name} (${net.chainId})`;
+      $("netPill").style.borderColor = net.chainId === 8453 ? "rgba(0,230,166,.6)" : "rgba(255,176,32,.6)";
+    }
+    async function switchToBase(){
+      await ensureProvider();
+      try{
+        await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId:"0x2105" }] });
+      }catch(e){
+        if (e && e.code === 4902){
+          await window.ethereum.request({ method:"wallet_addEthereumChain", params:[{
+            chainId:"0x2105",
+            chainName:"Base Mainnet",
+            nativeCurrency:{ name:"ETH", symbol:"ETH", decimals:18 },
+            rpcUrls:["https://mainnet.base.org"],
+            blockExplorerUrls:["https://basescan.org"]
+          }]});
+        }else{
+          throw e;
+        }
+      }
+      await showNetwork();
+      log("Switched to Base.");
+    }
+
+    // ----- Read & Write -----
+    function getContract(){
+      if (!provider) throw new Error("Connect your wallet first.");
+      if (!signer) signer = provider.getSigner();
+      return new ethers.Contract(CONTRACT, ABI, signer);
+    }
+
+    async function readTotal(){
+      clearLog();
+      await ensureProvider();
+      const txt = $("comment").value.trim();
+      if (!txt) throw new Error("Enter a comment/text first.");
+      const cid = ethers.utils.id(txt);
+      const r = await provider.getNetwork();
+      if (r.chainId !== 8453) log("Note: reading on non-Base network may fail if your wallet blocks RPCs.");
+      const c = new ethers.Contract(CONTRACT, ABI, provider);
+      const total = await c.totalByComment(cid);
+      log("Total for this commentId: " + total.toString() + " wei");
+    }
+
+    async function sendTip(){
+      clearLog();
+      await ensureProvider();
+      const net = await provider.getNetwork();
+      if (net.chainId !== 8453) throw new Error("Not on Base. Click ‘Switch to Base’ first.");
+      const txt = $("comment").value.trim();
+      const recipient = $("recipient").value.trim();
+      const amount = $("amount").value.trim();
+      if (!txt) throw new Error("Enter a comment or URL.");
+      if (!/^0x[a-fA-F0-9]{40}$/.test(recipient)) throw new Error("Recipient must be a 0x address.");
+      if (!amount || Number(amount) <= 0) throw new Error("Enter a positive ETH amount.");
+
+      const cid = ethers.utils.id(txt);
+      const c = getContract();
+      log("Sending transaction…");
+      const tx = await c.tip(cid, recipient, { value: toWei(amount) });
+      log("Tx sent: " + tx.hash);
+      const rc = await tx.wait();
+      log("✅ Confirmed in block " + rc.blockNumber + "\nhttps://basescan.org/tx/" + tx.hash);
+      $("expl").href = "https://basescan.org/tx/" + tx.hash;
+      $("expl").textContent = "View tx ↗";
+    }
+
+    // ----- Wire UI -----
+    $("connectBtn").onclick = async () => { try{ await connect(); }catch(e){ log("❌ " + (e.message||e)); } };
+    $("switchBtn").onclick = async () => { try{ await switchToBase(); }catch(e){ log("❌ " + (e.message||e)); } };
+    $("readBtn").onclick   = async () => { try{ await readTotal(); }catch(e){ log("❌ " + (e.message||e)); } };
+    $("tipBtn").onclick    = async () => { try{ await sendTip(); }catch(e){ log("❌ " + (e.message||e)); } };
+
+    // Init network pill on load (best-effort)
+    (async()=>{
+      try{
+        if (window.ethereum){
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          await showNetwork();
+        }else{
+          $("netName").textContent = "No wallet";
+        }
+      }catch{ /* ignore */ }
+    })();
+  </script>
+</body>
+</html>
